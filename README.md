@@ -8,4 +8,4 @@
 
 A package to assist in loading data aquired from [QCoDeS](https://qcodes.github.io/Qcodes/index.html) into Julia.
 
-When exporting data to csv, QCoDeS does so into a 3 column csv file that is cumbersome to work compared to exporting a x and y vector with a 2D array of z values. This package allows yout to navigate your directory, select a csv exported from QCoDeS, and then load it into Julia and transmuting it into the aforementioned x, y and z.
+When exporting data to csv, QCoDeS does so into a 3 column csv file that is cumbersome to work with compared to exporting a x and y vector with a 2D array of z values. This package allows yout to navigate your directory, select a csv exported from QCoDeS, and then load it into Julia and transmuting it into the aforementioned x, y and z.
