@@ -1,5 +1,7 @@
-function load_csv(filepath, filename=nothing)
+function load_csv(filepath, filename=nothing, save=false::Bool)
     data = []
+    choice = []
+    files = readdir(filepath)
     if filename == nothing
         csv_check = true
         while csv_check
@@ -30,6 +32,11 @@ function load_csv(filepath, filename=nothing)
 
     if size(data)[2] == 3
         x, y, z = transmute2D(data)
+        if save==true
+            CSV.write(filepath*files[choice][:end-4]*"_z.csv", DataFrame(z, :auto), header=false)
+            CSV.write(filepath*files[choice][:end-4]*"_x.csv", DataFrame([x], :auto), header=false)
+            CSV.write(filepath*files[choice][:end-4]*"_y.csv", DataFrame([y], :auto), header=false)
+        end
         return x, y, z
     else
         return data[:,1], data[:, 2]
