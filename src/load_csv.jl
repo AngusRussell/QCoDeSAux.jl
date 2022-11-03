@@ -1,4 +1,4 @@
-function load_csv(filepath, filename=nothing, save=false::Bool)
+function load_csv(filepath, filename::String=nothing, save::Bool=false)
     data = []
     choice = []
     files = readdir(filepath)
@@ -33,9 +33,9 @@ function load_csv(filepath, filename=nothing, save=false::Bool)
     if size(data)[2] == 3
         x, y, z = transmute2D(data)
         if save==true
-            CSV.write(filepath*files[choice][:end-4]*"_z.csv", DataFrame(z, :auto), header=false)
-            CSV.write(filepath*files[choice][:end-4]*"_x.csv", DataFrame([x], :auto), header=false)
-            CSV.write(filepath*files[choice][:end-4]*"_y.csv", DataFrame([y], :auto), header=false)
+            CSV.write(filepath*files[choice][1:end-4]*"_z.csv", DataFrame(z, :auto), header=false)
+            CSV.write(filepath*files[choice][1:end-4]*"_x.csv", DataFrame([x], :auto), header=false)
+            CSV.write(filepath*files[choice][1:end-4]*"_y.csv", DataFrame([y], :auto), header=false)
         end
         return x, y, z
     else
@@ -43,6 +43,48 @@ function load_csv(filepath, filename=nothing, save=false::Bool)
     end
 end
 
+
+function load_csv(filepath, save::Bool=false)
+    data = []
+    choice = []
+    files = readdir(filepath)
+    csv_check = true
+    while csv_check
+        
+        files = readdir(filepath)
+        
+        menu = RadioMenu(files, pagesize=5, charset=:unicode)
+        choice = request("Choose a .csv file to load:\n(Navgate with arrow keys, press enter to select)", menu)
+
+        if choice != -1
+            if contains(files[choice], ".csv")
+                csv_check = false
+                println("Loading ", files[choice], "...")
+                data = CSV.read(filepath*files[choice], header=1, Tables.matrix)
+                println("Complete!")
+            else
+                filepath = string(filepath, files[choice], "/")
+                continue
+            end
+        else
+            println("menu cancelled.")
+            return
+        end
+    end
+
+
+    if size(data)[2] == 3
+        x, y, z = transmute2D(data)
+        if save==true
+            CSV.write(filepath*files[choice][1:end-4]*"_z.csv", DataFrame(z, :auto), header=false)
+            CSV.write(filepath*files[choice][1:end-4]*"_x.csv", DataFrame([x], :auto), header=false)
+            CSV.write(filepath*files[choice][1:end-4]*"_y.csv", DataFrame([y], :auto), header=false)
+        end
+        return x, y, z
+    else
+        return data[:,1], data[:, 2]
+    end
+end
 
 
 # "C:/users/angus/OneDrive - University of Strathclyde/Documents/University work/5th Year/Project/Angus_VNA/"
